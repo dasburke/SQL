@@ -1,42 +1,122 @@
+/* Create a table of actors */
+
+CREATE TABLE actors (id INTEGER PRIMARY KEY AUTOINCREMENT, fname TEXT, lname TEXT, age INTEGER); 
+
+INSERT INTO actors (fname, lname, age) VALUES ("Keanu", "Reeves", 58);
+INSERT INTO actors (fname, lname, age) VALUES ("Tom", "Cruise", 60);
+INSERT INTO actors (fname, lname, age) VALUES ("Tom", "Hanks", 66);
+INSERT INTO actors (fname, lname, age) VALUES ("George", "Clooney", 61);
+INSERT INTO actors (fname, lname, age) VALUES ("Denzel", "Washington", 68);
+INSERT INTO actors (fname, lname, age) VALUES ("Leonardo", "Dicaprio", 48);
+INSERT INTO actors (fname, lname, age) VALUES ("Will", "Smith", 54);
+INSERT INTO actors (fname, lname, age) VALUES ("Brad", "Pitt", 59);
+INSERT INTO actors (fname, lname, age) VALUES ("Ben", "Affleck", 50);
+INSERT INTO actors (fname, lname, age) VALUES ("Matt", "Damon", 52);
+INSERT INTO actors (fname, lname, age) VALUES ("Sandra", "Bullock", 58);
+INSERT INTO actors (fname, lname, age) VALUES ("Uma", "Thurman", 52);
+INSERT INTO actors (fname, lname, age) VALUES ("Natalie", "Portman", 41);
+INSERT INTO actors (fname, lname, age) VALUES ("Scarlett", "Johansson", 38);
+INSERT INTO actors (fname, lname, age) VALUES ("Idris", "Elba", 50);
+
+/* Create a table of directors */
+
+CREATE TABLE directors (id INTEGER PRIMARY KEY AUTOINCREMENT, fname TEXT, lname TEXT, age INTEGER);
+
+INSERT INTO directors (fname, lname, age) VALUES ("Martin", "Scorsese", 80);
+INSERT INTO directors (fname, lname, age) VALUES ("Quentin", "Tarantino", 60);
+INSERT INTO directors (fname, lname, age) VALUES ("Christopher", "Nolan", 52);
+INSERT INTO directors (fname, lname, age) VALUES ("David", "Fincher", 60);
+INSERT INTO directors (fname, lname, age) VALUES ("Wes", "Anderson", 53);
+INSERT INTO directors (fname, lname, age) VALUES ("Kevin", "Smith", 52);
+INSERT INTO directors (fname, lname, age) VALUES ("Paul Thomas", "Anderson", 52);
+INSERT INTO directors (fname, lname, age) VALUES ("Steven", "Spielberg", 76);
+INSERT INTO directors (fname, lname, age) VALUES ("George", "Lucas", 78);
+INSERT INTO directors (fname, lname, age) VALUES ("Steven", "Soderbergh", 60);
+INSERT INTO directors (fname, lname, age) VALUES ("James", "Cameron", 68);
+INSERT INTO directors (fname, lname, age) VALUES ("Kathryn", "Bigelow", 71);
+INSERT INTO directors (fname, lname, age) VALUES ("Spike", "Lee", 66);
+INSERT INTO directors (fname, lname, age) VALUES ("Lana", "Wachowski", 57);
+INSERT INTO directors (fname, lname, age) VALUES ("Lily", "Wachowski", 55);
+
+
+/* Create a table of writers */
+
+CREATE TABLE writers (id INTEGER PRIMARY KEY AUTOINCREMENT, fname TEXT, lname TEXT, age INTEGER);
+
+INSERT INTO writers (fname, lname, age) VALUES ("Aaron", "Sorkin", 61);
+INSERT INTO writers (fname, lname, age) VALUES ("Spike", "Lee", 66);
+INSERT INTO writers (fname, lname, age) VALUES ("Quentin", "Tarantino", 60);
+INSERT INTO writers (fname, lname, age) VALUES ("Oliver", "Stone", 76);
+INSERT INTO writers (fname, lname, age) VALUES ("Charlie", "Kaufman", 64);
+INSERT INTO writers (fname, lname, age) VALUES ("Cameron", "Crowe", 65);
+INSERT INTO writers (fname, lname, age) VALUES ("William", "Goldman", 87);
+INSERT INTO writers (fname, lname, age) VALUES ("Nora", "Ephron", 71);
+INSERT INTO writers (fname, lname, age) VALUES ("Mel", "Brooks", 96);
+INSERT INTO writers (fname, lname, age) VALUES ("Robert", "Towne", 88);
+INSERT INTO writers (fname, lname, age) VALUES ("Paul", "Schrader", 76);
+INSERT INTO writers (fname, lname, age) VALUES ("Lawrence", "Kasdan", 74);
+INSERT INTO writers (fname, lname, age) VALUES ("David", "Mamet", 75);
+INSERT INTO writers (fname, lname, age) VALUES ("Eric", "Roth", 78);
+INSERT INTO writers (fname, lname, age) VALUES ("Joss", "Whedon", 58);
+
+
 /* Create a table of movies */
-CREATE TABLE movies (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, release_year INTEGER);
 
-INSERT INTO movies (title, release_year) VALUES ("The Matrix", 1999);
-INSERT INTO movies (title, release_year) VALUES ("Out of Sight", 1998);
-INSERT INTO movies (title, release_year) VALUES ("Kill Bill", 2003);
+CREATE TABLE movies (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, release_year INTEGER, actor_id1 INTEGER, actor_id2 INTEGER, director_id1 INTEGER, director_id2 INTEGER, writer_id1 INTEGER, writer_id2 INTEGER);
 
-/* Create a table of celebrities with a movie_id for films they have been in */
-CREATE TABLE celeb_profiles (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, age INTEGER, gender TEXT, state TEXT, movie_id INTEGER);
+INSERT INTO movies (title, release_year, actor_id1, director_id1, director_id2, writer_id1) VALUES ("The Matrix", 1999, 1, 14, 15, 3);
+INSERT INTO movies (title, release_year, actor_id1, director_id1, writer_id1) VALUES ("Pulp Fiction", 1994, 12, 2, 3);
+INSERT INTO movies (title, release_year, actor_id1, director_id1) VALUES ("Inception", 2010, 6, 3);
+INSERT INTO movies (title, release_year, actor_id1, director_id1) VALUES ("Fight Club", 1999, 8, 4);
+INSERT INTO movies (title, release_year, actor_id1, director_id1) VALUES ("Catch Me If You Can", 2002, 6, 8);
+INSERT INTO movies (title, release_year, actor_id1, actor_id2, director_id1) VALUES ("Ocean's Eleven", 2001, 4, 8, 10);
+INSERT INTO movies (title, release_year, actor_id1, director_id1) VALUES ("Malcom X", 1992, 5, 13);
+INSERT INTO movies (title, release_year, director_id1, writer_id1) VALUES ("The Social Network", 2010, 4, 1);
+INSERT INTO movies (title, release_year, actor_id1, writer_id1) VALUES ("Jerry Maguire", 1996, 2, 6);
+INSERT INTO movies (title, release_year, actor_id1, director_id1) VALUES ("Kill Bill Vol. 1", 2003, 12, 2);
+INSERT INTO movies (title, release_year, actor_id1, writer_id1) VALUES ("A Few Good Men", 1992, 2, 1);
+INSERT INTO movies (title, release_year, actor_id1, director_id1) VALUES ("Chasing Amy", 1997, 9, 6);
+INSERT INTO movies (title, release_year, actor_id1, writer_id1) VALUES ("The Avengers", 2012, 14, 15);
+INSERT INTO movies (title, release_year, actor_id1, director_id1) VALUES ("Star Wars: Episode I: The Phantom Menace", 1999, 13, 9);
+INSERT INTO movies (title, release_year, actor_id1, writer_id1) VALUES ("Mission Impossible 2", 2000, 2, 10);
 
-INSERT INTO celeb_profiles (name, age, gender, movie_id) VALUES ("Keanu Reeves", 58, "M", (SELECT id FROM movies WHERE title = "The Matrix"));
-INSERT INTO celeb_profiles (name, age, gender, state, movie_id) VALUES ("George Clooney", 61, "M", "CA", (SELECT id FROM movies WHERE title = "Out of Sight"));
-INSERT INTO celeb_profiles (name, age, gender, state, movie_id) VALUES ("Uma Thurman", 52, "F", "CA", (SELECT id FROM movies WHERE title = "Kill Bill"));
+/* List movies where an actor in the actors table, and a director in the directors table have worked together on the same movie. List the movie title and the actor's/director's names. */
 
-/* Create a table of directors, including the id of the films they've created */
-CREATE TABLE directors (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, age INTEGER, most_famous_movie_id INTEGER);
-
-INSERT INTO directors (name, age, most_famous_movie_id) VALUES ("Wachowski", 57,
-(SELECT id FROM movies WHERE title = "The Matrix"));
-INSERT INTO directors (name, age, most_famous_movie_id) VALUES ("Soderbergh", 60, (SELECT id FROM movies WHERE title = "Out of Sight"));
-INSERT INTO directors (name, age, most_famous_movie_id) VALUES ("Tarantino", 60, (SELECT id FROM movies WHERE title = "Kill Bill")); 
-
-/* Create a table that records the film, actor, and director attached to eachother */
-CREATE TABLE worked_with_eachother (id INTEGER PRIMARY KEY AUTOINCREMENT, movie_id INTEGER, actor_id INTEGER, director_id INTEGER);
-
-INSERT INTO worked_with_eachother (movie_id, actor_id, director_id) VALUES (1, 1, 1);
-INSERT INTO worked_with_eachother (movie_id, actor_id, director_id) VALUES (2, 2, 2);
-INSERT INTO worked_with_eachother (movie_id, actor_id, director_id) VALUES (3, 3, 3);
+SELECT movies.title AS Title,
+actors.fname AS Actor_First_Name,
+actors.lname AS Actor_Last_Name,
+directors.fname AS Director_First_Name,
+directors.lname AS Director_Last_Name
+FROM movies
+JOIN actors ON actors.id = movies.actor_id1
+JOIN directors ON directors.id = movies.director_id1;
 
 
-/* Pull Actors and Directors Who've Worked Together */
+/* Show a list of films starring Tom Cruise that came out in 1993 or later, listing their release date. */ 
 
-SELECT celeb_profiles.name AS ACTOR, directors.name AS DIRECTOR FROM celeb_profiles
-INNER JOIN directors
-ON celeb_profiles.id = directors.most_famous_movie_id;
+SELECT movies.title AS Title, release_year AS Release_Year FROM movies WHERE movies.actor_id1 = 2 AND movies.release_year >= 1993;
 
-/* Use the worked_with_eachother table to pull the actors, directors, and movies together */
-SELECT celeb_profiles.name AS Actor, directors.name AS Director, movies.title AS Movie
-FROM worked_with_eachother
-INNER JOIN celeb_profiles ON celeb_profiles.id = worked_with_eachother.actor_id
-INNER JOIN directors ON directors.id = worked_with_eachother.director_id
-INNER JOIN movies ON movies.id = worked_with_eachother.movie_id;
+/* List any movies which star two different actors in the actors table. Include the movie title, release year, and the names of the actors. */
+
+SELECT movies.title AS Title,
+movies.release_year as Release_Year,
+actors.fname AS Actor1_First_Name,
+actors.lname AS Actor1_Last_Name,
+actors2.fname AS Actor2_First_Name,
+actors2.lname AS Actor2_Last_Name
+FROM movies
+JOIN actors
+ON movies.actor_id1 = actors.id
+JOIN actors actors2
+ON movies.actor_id2 = actors2.id;
+
+/* How many movies in the movies table has Leonardo Dicaprio starred in? */
+
+SELECT COUNT(actor_id1) as How_Many_Movies_on_This_List_Star_Leonardo_Dicaprio FROM movies WHERE actor_id1 = 6;
+
+/* List the titles of the movies Leo has starred in and the names of the directors.*/
+
+SELECT movies.title as Title, directors.fname as Director_First_Name, directors.lname as Director_Last_Name
+FROM movies 
+JOIN directors ON movies.director_id1 = directors.id 
+WHERE movies.actor_id1 = 6;
