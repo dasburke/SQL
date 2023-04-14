@@ -78,3 +78,9 @@ AND BIT_DB.FebSales.orderID <>''
 AND BIT_DB.customers.acctnum IS NOT NULL
 AND BIT_DB.customers.acctnum <>'';
 
+--8. List all the products sold in Los Angeles in February, and include how many of each were sold.
+
+SELECT BIT_DB.FebSales.product Product_Name, SUM(BIT_DB.FebSales.quantity) How_Many_Sold, BIT_DB.FebSales.location Location
+FROM BIT_DB.FebSales
+WHERE BIT_DB.FebSales.location LIKE '%Los Angeles%'
+GROUP BY BIT_DB.FebSales.product;
