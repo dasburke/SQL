@@ -63,7 +63,6 @@ WHERE BIT_DB.FebSales.location = "548 Lincoln St, Seattle, WA 98101"
 GROUP BY BIT_DB.FebSales.Product;
 
 
-
 --7. How many customers ordered more than 2 products at a time in February, and what was the average amount spent for those customers?
 --Answer: 278 orders in February were for more than 2 products. The average amount spent was: $13.83.
 
