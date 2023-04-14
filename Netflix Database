@@ -1,4 +1,4 @@
-/* There are queries written for a database of Netflix movies and TV shows. I have included each prompt question along with my SQL query and answer. */
+/* There are queries written for a database of Netflix movies and TV shows. I have included each prompt question along with my PostgreSQL query and answer. */
 
 /* 1 -- How many movie titles are there in the database? (movies only, not tv shows): Answer: 6,131 */
  
