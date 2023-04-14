@@ -1,0 +1,81 @@
+--1. How many orders were placed in January?
+--Answer: 9,681
+
+SELECT count(orderID)
+FROM BIT_DB.JanSales
+WHERE orderID <> 'Order ID'
+AND orderID IS NOT NULL
+AND orderID <>'';
+
+
+--2. How many of those orders were for an iPhone?
+--Answer: 379
+
+SELECT count(BIT_DB.JanSales.orderID)
+FROM BIT_DB.JanSales
+WHERE BIT_DB.JanSales.orderID <> 'Order ID'
+AND BIT_DB.JanSales.orderID IS NOT NULL
+AND BIT_DB.JanSales.orderID <>''
+AND BIT_DB.JanSales.product = 'iPhone';
+
+
+--3. Select the customer account numbers for all the orders that were placed in February.
+
+SELECT DISTINCT BIT_DB.customers.acctnum
+FROM BIT_DB.customers
+INNER JOIN BIT_DB.FebSales
+ON BIT_DB.customers.order_id = BIT_DB.FebSales.orderID
+WHERE BIT_DB.customers.order_id <> 'Order ID'
+AND BIT_DB.customers.order_id IS NOT NULL
+AND BIT_DB.customers.order_id <> '';
+
+
+--4. Which product was the cheapest one sold in January, and what was the price?
+--Answer: AAA Batteries (4-pack) @ $2.99
+
+SELECT BIT_DB.JanSales.Product, MIN(BIT_DB.JanSales.price)
+FROM BIT_DB.JanSales
+WHERE BIT_DB.JanSales.Product IS NOT NULL
+AND BIT_DB.JanSales.Product <>''
+AND BIT_DB.JanSales.price <> 'Price Each'
+GROUP BY BIT_DB.JanSales.Product
+ORDER BY MIN(BIT_DB.JanSales.price)
+LIMIT 1;
+
+
+--5. What is the total revenue for each product sold in January?
+--See query results for revenue totals for each product.
+
+SELECT BIT_DB.JanSales.orderID, BIT_DB.JanSales.Product, SUM(BIT_DB.JanSales.Quantity)*BIT_DB.JanSales.price AS revenue
+FROM BIT_DB.JanSales
+WHERE BIT_DB.JanSales.orderID IS NOT NULL
+AND BIT_DB.JanSales.orderID <> 'Order ID'
+AND BIT_DB.JanSales.orderID <>''
+GROUP BY BIT_DB.JanSales.Product;
+
+
+--6. Which products were sold in February at 548 Lincoln St, Seattle, WA 98101, how many of each were sold, and what was the total revenue?
+--Answer: AA Batteries (4-pack), 2 of them. The total revenue was $7.68
+
+SELECT BIT_DB.FebSales.Product, SUM(BIT_DB.FebSales.Quantity) quantity, SUM(BIT_DB.FebSales.Quantity)*BIT_DB.FebSales.price AS revenue
+FROM BIT_DB.FebSales
+WHERE BIT_DB.FebSales.location = "548 Lincoln St, Seattle, WA 98101"
+GROUP BY BIT_DB.FebSales.Product;
+
+
+
+--7. How many customers ordered more than 2 products at a time in February, and what was the average amount spent for those customers?
+--Answer: 278 orders in February were for more than 2 products. The average amount spent was: $13.83.
+
+SELECT count(DISTINCT BIT_DB.customers.acctnum) how_many_customers,
+AVG(BIT_DB.FebSales.Quantity*BIT_DB.FebSales.price) average_spend
+FROM BIT_DB.FebSales
+LEFT JOIN BIT_DB.customers
+ON BIT_DB.customers.order_id = BIT_DB.FebSales.orderID
+WHERE BIT_DB.FebSales.Quantity > 2
+AND BIT_DB.FebSales.orderID IS NOT NULL
+AND BIT_DB.FebSales.orderID <> 'Order ID'
+AND BIT_DB.FebSales.orderID <>''
+AND BIT_DB.customers.acctnum IS NOT NULL
+AND BIT_DB.customers.acctnum <>'';
+
