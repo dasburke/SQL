@@ -1,0 +1,72 @@
+/*
+For this project I went to Kaggle and downloaded a Spotify dataset - The Top 50 Songs in 2021.
+https://www.kaggle.com/datasets/equinxx/spotify-top-50-songs-in-2021
+
+I then created a table to insert this data into and performed analytics on the data using SQL.
+*/
+
+
+--1. Top 10 Tracks (w artist) by popularity
+
+SELECT BIT_DB.Spotifydata.artist_name AS Artist_Name,
+BIT_DB.Spotifydata.track_name AS Track_Name,
+BIT_DB.Spotifydata.popularity AS Popularity
+FROM BIT_DB.Spotifydata
+ORDER BY BIT_DB.Spotifydata.popularity DESC
+LIMIT 10; 
+
+
+--2. Top 5 Longest Songs
+
+SELECT BIT_DB.Spotifydata.track_name AS Track_Name,
+BIT_DB.Spotifydata.artist_name AS Artist_Name,
+BIT_DB.Spotifydata.duration_ms AS Duration_in_Milliseconds
+FROM BIT_DB.Spotifydata
+ORDER BY duration_ms DESC
+LIMIT 5;
+
+
+--3. What are the 5 songs with the lowest "loudness" score and also a danceability above 0.5?
+
+SELECT BIT_DB.Spotifydata.track_name AS Track_Name,
+BIT_DB.Spotifydata.loudness AS Loudness,
+BIT_DB.Spotifydata.danceability AS Danceability
+FROM BIT_DB.Spotifydata
+WHERE BIT_DB.Spotifydata.danceability > .5
+ORDER BY BIT_DB.Spotifydata.loudness ASC
+LIMIT 5;
+
+
+--4. Top 10 Artists with the highest average danceability score for their songs in this table.
+
+SELECT BIT_DB.Spotifydata.artist_name AS Artist_Name,
+AVG(BIT_DB.Spotifydata.danceability) AS Average_Danceability_Score
+FROM BIT_DB.Spotifydata
+GROUP BY BIT_DB.Spotifydata.artist_name
+ORDER BY AVG(BIT_DB.Spotifydata.danceability) DESC
+LIMIT 10;
+
+
+--5. How many artists have a valence of .5 or lower?
+
+SELECT COUNT(BIT_DB.Spotifydata.artist_name) AS How_Many_Artists
+FROM BIT_DB.Spotifydata
+WHERE BIT_DB.Spotifydata.valence <= 0.5;
+
+
+--6. Out of the Bottom 5 least popular songs, which has the highest tempo?
+
+SELECT BIT_DB.Spotifydata.track_name AS Track_Name,
+BIT_DB.Spotifydata.popularity AS Popularity,
+BIT_DB.Spotifydata.tempo AS Tempo
+FROM BIT_DB.Spotifydata
+WHERE BIT_DB.Spotifydata.popularity IN
+(
+    SELECT BIT_DB.Spotifydata.popularity
+    FROM BIT_DB.Spotifydata
+    ORDER BY BIT_DB.Spotifydata.popularity ASC
+    LIMIT 5
+)
+ORDER BY BIT_DB.Spotifydata.tempo DESC
+LIMIT 1;
+
