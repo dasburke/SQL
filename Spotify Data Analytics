@@ -70,3 +70,26 @@ WHERE BIT_DB.Spotifydata.popularity IN
 ORDER BY BIT_DB.Spotifydata.tempo DESC
 LIMIT 1;
 
+
+--7. Specifically using a CTE:
+--Calculate the average popularity for the artists in the Spotify data table.
+--Then, for every artist with an average popularity of 90 or above, show their name, their average popularity, and label them as a “Top Star”.
+
+WITH AvgPop AS
+(
+SELECT
+Spotifydata.artist_name,
+AVG(Spotifydata.popularity) AS Avg_Pop_Score
+FROM Spotifydata
+GROUP BY Spotifydata.artist_name
+)
+SELECT artist_name AS Artist_Name,
+Avg_Pop_Score,
+    CASE
+        WHEN Avg_Pop_Score >= 90 THEN 'Top_Star'
+        ELSE 'Doing_Okay'
+    END AS Pop_Level
+FROM AvgPop
+WHERE Avg_Pop_Score >= 90
+ORDER BY Avg_Pop_Score;
+
