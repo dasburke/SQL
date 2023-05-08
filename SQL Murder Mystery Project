@@ -1,0 +1,378 @@
+/*
+Here is how I went about solving the "SQL Murder Mystery."
+I will walk through my thought processes in the comments, and the SQL I wrote to solve the game.
+
+The game can be found at: https://mystery.knightlab.com
+
+The setup is the following:
+
+"A crime has taken place and the detective needs your help.
+The detective gave you the crime scene report, but you somehow lost it.
+You vaguely remember that the crime was a murder that occurred sometime on Jan. 15, 2018 and that it took place in SQL City.
+Start by retrieving the corresponding crime scene report from the police department’s database.
+*/
+
+--I start by querying the crime_scene_report table to find all reports matching the date, location, and type for the murder:
+
+SELECT
+*
+FROM crime_scene_report
+WHERE city = 'SQL City'
+AND type = 'murder'
+AND date = 20180115;
+
+/*
+From this report, we learn:
+"Security footage shows that there were 2 witnesses.
+The first witness lives at the last house on 'Northwestern Dr'.
+The second witness, named Annabel, lives somewhere on 'Franklin Ave'."
+*/
+
+--I now go about pulling information from the person table, to find out more about these two witnesses.
+--I start with witness #1, who lives on "Northwestern Dr.":
+
+SELECT
+*
+FROM person
+WHERE address_street_name = 'Northwestern Dr'
+ORDER BY address_number DESC
+LIMIT 1;
+
+--By ordering by descending, I make sure to specifically grab the last house on Northwestern Dr.
+
+/*
+I discover the following info about our first witness:
+person.id: 14887
+person.name: Morty Schapiro
+person.license_id: 118009
+person.address_number: 4919
+person.address_street_name: Northwestern Dr
+person.ssn: 111564949
+*/
+
+--I now need to know what he saw. I pull from the interview table, to see what Morty has said:
+
+SELECT
+*
+FROM interview
+WHERE interview.person_id = 14887
+
+/*
+Morty's statement:
+"I heard a gunshot and then saw a man run out.
+He had a "Get Fit Now Gym" bag.
+The membership number on the bag started with '48Z'.
+Only gold members have those bags.
+The man got into a car with a plate that included 'H42W'."
+*/
+
+--Okay, that's quite a bit of info. Here are the main takeaways:
+--The killer had a 'Get Fit Now Gym' bag with him.
+--The bag had a membership number on it that started with '48Z'.
+--He knows that only gold members have those bags.
+--The killer then got into a car with a license plate that included 'H42W'.
+
+--Let's put those details to the side for a moment and see what witness #2 had to say about the event.
+
+--First we've got to find this person. We know her name is Annabel, and she lives somewhere on 'Franklin Ave'.
+--Let's pull from the person table to see what we can find:
+
+SELECT
+*
+FROM person
+WHERE address_street_name = 'Franklin Ave'
+AND NAME LIKE 'Annabel%';
+
+/*
+I discover the following about her:
+person.id: 16371
+person.name: Annabel Miller
+person.license_id: 490173
+person.address_number: 103
+person.address_street_name: Franklin Ave
+person.ssn: 318771143
+*/
+
+--Now we can pull her statement from the interview table and see what she said:
+
+SELECT
+*
+FROM interview
+WHERE interview.person_id = 16371
+
+/*
+Annabel's statement:
+"I saw the murder happen, and I recognized the killer from my gym when I was working out last week on January the 9th."
+*/
+
+--Main takeaways:
+--She saw the murder happen.
+--She recognized the killer from her gym when she was working out on January 9th 2018.
+--(We can infer the year, even though she didn't say it, because we already know the murder happened on January 15th 2018.)
+
+--Okay, let's collect everything we've got from our two witnesses and chase down some leads!
+
+--Morty:
+--The killer had a 'Get Fit Now Gym' bag with a member ID that started with "48Z" on it.
+--The killer must be a gold member.
+--The killer then got into a car with a license plate that included "H42W".
+
+--Annabel:
+--She recognized the killer from her gym when she was working out on January 9th 2018.
+
+--Let's take a look at our Get Fit Now Gym member table.
+--We're looking for a member with a "gold" status and a member ID that starts with '48Z'.
+
+SELECT
+*
+FROM get_fit_now_member 
+WHERE id LIKE '48Z%'
+AND membership_status = 'gold'
+
+/*
+I discover the following two members:
+
+Member 1:
+get_fit_now_member.id: 48Z7A
+get_fit_now_member.person_id: 28819
+get_fit_now_member.name: Joe Germuska
+get_fit_now_member.membership_start_date: 20160305
+get_fit_now_member.membership_status: gold
+
+Member 2:
+get_fit_now_member.id: 48Z55
+get_fit_now_member.person_id: 67318
+get_fit_now_member.name: Jeremy Bowers
+get_fit_now_member.membership_start_date: 20160101
+get_fit_now_member.membership_status: gold
+*/
+
+--Now let's go see if we have any interviews with these two suspects!
+--Joe:
+
+SELECT
+*
+FROM interview
+WHERE person_id = 28819
+
+--The query comes back with 'No data returned.'
+--Alright, let's try Jeremy:
+
+SELECT
+*
+FROM interview
+WHERE person_id = 67318
+
+/*
+I discover there IS an interview with Jeremy where he said the following:
+"I was hired by a woman with a lot of money.
+I don't know her name but I know she's around 5'5" (65") or 5'7" (67").
+She has red hair and she drives a Tesla Model S.
+I know that she attended the SQL Symphony Concert 3 times in December 2017."
+*/
+
+--Okay! Let's pause for a moment and remember that Morty told us the killer got into a car with a license plate that included "H42W".
+--Let's look up any license plates with "H42W" in them to see if any of them are attached to a Tesla Model S.
+
+SELECT
+*
+FROM drivers_license
+WHERE plate_number LIKE '%H42W%'
+
+/*
+We discover three cars with a license plate that includes "H42W":
+
+1. H42W0X - Toyota Pruis, belonging to a female.
+2. 0H42W2 - Chevrolet Spark LS, belonging to a male.
+3. 4H42WR - Nissan Altima, belonging to a male.
+*/
+
+--None of these are a Tesla Model S.
+
+--It sounds like Jeremey pulled the trigger, and then escaped in his own car (either the Chevrolet or the Nissan).
+--But according to his interview, he was hired by a red haired woman who drives a Tesla.
+
+--Now we could, at this point, take a look at the check-in and check-out times for Annabel, Jeremey, and Joe at the gym on January 9th 2018.
+--We could see if there's any useful info there re: Jeremy or Joe.
+--But given that Jeremey told us about this mysterious woman who supposedly hired him... we'll chase her down and see where that leads us.
+
+--We need to find this woman based on the details we've gleaned from Jeremy's interview:
+--1. Female
+--2. Lots of money
+--3. No name
+--4. Around 65" or 67" tall
+--5. Red Hair
+--6. Drives a Tesla Model S
+--7. She went to the SQL Symphony Concert 3 times in December of 2017.
+
+--We have an income table we could query against, but given that we don't know exactly what Jeremy thinks is "a lot of money,"
+--let's instead pull from the drivers_license table and see if we can chase her down based on her other characteristics.
+--Can we find any females between 65" and 67" tall, who have red hair and drive a Tesla?
+
+SELECT
+*
+FROM drivers_license
+WHERE gender = 'female'
+AND height BETWEEN 65 AND 67
+AND hair_color = 'red'
+AND car_make = 'Tesla'
+
+/*
+We get three results:
+
+SUSPECT 1:
+drivers_license.id: 202298
+drivers_license.height: 66
+drivers_license.hair_color: red 
+drivers_license.gender: female
+drivers_license.plate_number: 500123
+drivers_license.car_make: Tesla
+drivers_license.car_model: Model S
+
+SUSPECT 2:
+drivers_license.id: 291182
+drivers_license.height: 66
+drivers_license.hair_color: red 
+drivers_license.gender: female
+drivers_license.plate_number: 08CM64
+drivers_license.car_make: Tesla
+drivers_license.car_model: Model S
+
+SUSPECT 3:
+drivers_license.id: 918773
+drivers_license.height: 65
+drivers_license.hair_color: red 
+drivers_license.gender: female
+drivers_license.plate_number: 917UU3
+drivers_license.car_make: Tesla 
+drivers_license.car_model: Model S
+*/
+
+--That's three suspects!
+--But Jeremy also told us: "I know that she attended the SQL Symphony Concert 3 times in December 2017."
+--So let's pull from the facebook_event_checkin table and see if anyone visited the "SQL Symphony Concert" 3 times in December of 2017:
+
+SELECT
+person_id,
+event_id,
+event_name,
+date,
+COUNT(event_name) AS How_Many_Times
+FROM facebook_event_checkin
+WHERE event_name = 'SQL Symphony Concert'
+AND date LIKE '201712%'
+GROUP BY person_id
+HAVING How_Many_Times = 3
+
+/*
+We've got just two people who meet this criteria!
+
+SUSPECT A:
+facebook_event_checkin.person_id: 24556
+facebook_event_checkin.event_id: 1143
+facebook_event_checkin.event_name: SQL Symphony Concert
+facebook_event_checkin.date: 20171224
+facebook_event_checkin.How_Many_Times: 3
+
+SUSPECT B:
+facebook_event_checkin.person_id: 99716
+facebook_event_checkin.event_id: 1143
+facebook_event_checkin.event_name: SQL Symphony Concert
+facebook_event_checkin.date: 20171229
+facebook_event_checkin.How_Many_Times: 3
+*/
+
+--Okay, now let's just compare these person IDs to our 3 suspects and... WAIT! We don't have person IDs for our 3 suspects.
+--We only have their drivers_license_IDs.
+--Let's join the drivers_license table to the person table and get Suspects 1, 2, and 3's person_IDs!
+
+SELECT
+drivers_license.id AS Drivers_License_ID,
+person.id AS Person_ID,
+person.name,
+drivers_license.height,
+drivers_license.hair_color,
+drivers_license.gender,
+drivers_license.plate_number,
+drivers_license.car_make,
+drivers_license.car_model
+FROM drivers_license
+JOIN
+person
+ON person.license_id = drivers_license.id
+WHERE gender = 'female'
+AND height BETWEEN 65 AND 67
+AND hair_color = 'red'
+AND car_make = 'Tesla'
+
+/*
+Now we have our 3 suspects' names and person IDs
+Name: Red Korb, Person ID: 78881
+Name: Regina George, Person ID: 90700
+Name: Miranda Priestly, Person ID: 99716
+*/
+
+--They're all female, red hair, meet our height requirements, and all drive a Tesla Model S -- so the culprit could be any one of them.
+--But we know that only two people (Suspects A and B) visited the SQL Symphony Concert 3 times in December of 2017.
+--Person IDs: 24556 and 99716.
+
+--Now we can simply look at our list of Suspects 1, 2, and 3 and see that the Person ID 24556 does not appear. While Person ID 99716, does!
+--This is the quick and dirty way to do things when our list is just 3 items long.
+--But let's be more systematic and imagine our list of suspects was thousands of people long.
+--How would we write a query to match the existing Suspects 1, 2, and 3 to the list of Person IDs (Suspects A and B) who went to the concert 3 times in December?
+
+--We could write something like this to narrow everything down to exactly one suspect who meets all of our criteria and returns all of the relevant information:
+
+SELECT
+drivers_license.id AS Drivers_License_ID,
+facebook_event_checkin.person_id AS Person_ID,
+person.name,
+drivers_license.gender,
+drivers_license.height,
+drivers_license.hair_color,
+drivers_license.car_make,
+drivers_license.car_model,
+drivers_license.plate_number,
+facebook_event_checkin.event_name,
+facebook_event_checkin.date,
+COUNT(facebook_event_checkin.event_name) AS How_Many_Times
+FROM facebook_event_checkin
+JOIN
+person
+ON facebook_event_checkin.person_id = person.id
+JOIN
+drivers_license
+ON person.license_id = drivers_license.id
+WHERE facebook_event_checkin.event_name = 'SQL Symphony Concert'
+AND facebook_event_checkin.date LIKE '201712%'
+AND gender = 'female'
+AND height BETWEEN 65 AND 67
+AND hair_color = 'red'
+AND car_make = 'Tesla'
+AND person.id IN (24556, 99716)
+GROUP BY facebook_event_checkin.person_id
+HAVING COUNT(facebook_event_checkin.event_name) = 3
+
+/*
+Results:
+Drivers_License_ID: 202298
+Person_ID: 99716
+name: Miranda Priestly
+gender: female
+height: 66
+har_color: red
+car_make: Tesla
+car_model: Model S
+plate_number: 500123
+event_name: SQL Symphony Concert
+date: 20171229	
+How_Many_Times: 3
+*/
+
+--And there we have it! We have one answer and it's Miranda Priestly! We caught her red handed!
+
+--I acknowledge, like most SQL situations, there are many different ways one can solve this puzzle. I hope I have been informative
+--in walking you through my thought processes and why I approched the solution in the way that I did.
+
+
+
