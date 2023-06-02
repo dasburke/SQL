@@ -112,7 +112,14 @@ INSERT INTO topmovies(Rank,Title,Studio,Worldwide,Domestic,DomesticPct,Overseas,
 INSERT INTO topmovies(Rank,Title,Studio,Worldwide,Domestic,DomesticPct,Overseas,OverseasPct,Year) VALUES (100,'Tangled','BV',591.80,200.80,0.34,391.00,0.66,2010);
 
 /* Take each year and find the average worldwide box office for a film that year (according to this table.) Then display a list of these average box office revenue numbers, listed with the top earner first and the rest in descending order with the accompanying year. Show only the top 10 */
-SELECT year, AVG(worldwide) AS Worldwide_Box_Office_Average FROM topmovies GROUP BY year ORDER BY Worldwide_Box_Office_Average desc LIMIT 10;
+
+SELECT year,
+AVG(worldwide) AS Worldwide_Box_Office_Average
+FROM
+topmovies
+GROUP BY year
+ORDER BY Worldwide_Box_Office_Average desc
+LIMIT 10;
 
 /* Display all films with Spider in the title (guaranteeing that we capture all of the Spider-Man films) and display each film's worldwide box office, ordered by year so that we see how well (or not) each successive Spider-Man film has done over time. */
 
@@ -122,18 +129,42 @@ WHERE title LIKE '%Spider%'
 ORDER BY year;
 
 /* Display the year, and the total worldwide box office for that year in a new column called "Total_Worldwide_That_Year, then group these results so that we're only looking at years that made MORE than 4000 worldwide. */
-SELECT year, SUM(worldwide) AS Worldwide_Box_Office_Total FROM topmovies GROUP BY year HAVING Worldwide_Box_Office_Total > 4000;
+
+SELECT year,
+SUM(worldwide) AS Worldwide_Box_Office_Total
+FROM
+topmovies
+GROUP BY year
+HAVING Worldwide_Box_Office_Total > 4000;
 
 /* Find the film E.T. in the table and list it with its worldwide Box Office. */
-SELECT title, worldwide AS Worldwide_Box_Office_Total FROM topmovies WHERE title LIKE "%E.T.%";
+
+SELECT title,
+worldwide AS Worldwide_Box_Office_Total
+FROM topmovies
+WHERE title LIKE "%E.T.%";
 
 /* Display movies where the worldwide box office was less than E.T.'s, but more than that of Life of Pi: */
-SELECT title, worldwide AS Worldwide_Box_Office_Total FROM topmovies
-WHERE worldwide < (SELECT worldwide FROM topmovies WHERE title LIKE '%E.T.%') AND worldwide > (SELECT worldwide FROM topmovies WHERE title LIKE "%Life of Pi%");
+
+SELECT title,
+worldwide AS Worldwide_Box_Office_Total
+FROM
+topmovies
+WHERE worldwide < (SELECT worldwide FROM topmovies WHERE title LIKE '%E.T.%')
+AND
+worldwide > (SELECT worldwide FROM topmovies WHERE title LIKE "%Life of Pi%");
 
 /* Display the top 3 films where the Domestic Box Office percentage was a larger portion of the total box office take than overseas. */
 
-SELECT title, domestic AS Domestic_Box_Office, domesticpct AS Domestic_Box_Office_Precentage, worldwide AS Worldwide_Box_Office_Total FROM topmovies WHERE domesticPct > overseasPct ORDER BY domesticpct desc LIMIT 3;
+SELECT title,
+domestic AS Domestic_Box_Office,
+domesticpct AS Domestic_Box_Office_Precentage,
+worldwide AS Worldwide_Box_Office_Total
+FROM
+topmovies
+WHERE domesticPct > overseasPct
+ORDER BY domesticpct desc
+LIMIT 3;
 
 /* Take the list of films and label those with an overseas percentage of higher than 50% as "International Superstar!" in a new column called "How_Did_It_Do_Overseas"
 If the title's overseas percentage was lower than 50%, then label it "It played better at home." in the "How_Did_It_Do_Overseas" colum. 
