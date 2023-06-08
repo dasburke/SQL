@@ -45,7 +45,8 @@ LIMIT 1;
 
 --5. What is the total revenue for each product sold in January?
 
-SELECT BIT_DB.JanSales.orderID, BIT_DB.JanSales.Product, SUM(BIT_DB.JanSales.Quantity)*BIT_DB.JanSales.price AS revenue
+SELECT BIT_DB.JanSales.orderID, BIT_DB.JanSales.Product,
+SUM(BIT_DB.JanSales.Quantity)*BIT_DB.JanSales.price AS revenue
 FROM BIT_DB.JanSales
 WHERE BIT_DB.JanSales.orderID IS NOT NULL
 AND BIT_DB.JanSales.orderID <> 'Order ID'
@@ -56,7 +57,9 @@ GROUP BY BIT_DB.JanSales.Product;
 --6. Which products were sold in February at 548 Lincoln St, Seattle, WA 98101, how many of each were sold, and what was the total revenue?
 --Answer: AA Batteries (4-pack), 2 of them. The total revenue was $7.68
 
-SELECT BIT_DB.FebSales.Product, SUM(BIT_DB.FebSales.Quantity) quantity, SUM(BIT_DB.FebSales.Quantity)*BIT_DB.FebSales.price AS revenue
+SELECT BIT_DB.FebSales.Product,
+SUM(BIT_DB.FebSales.Quantity) quantity,
+SUM(BIT_DB.FebSales.Quantity)*BIT_DB.FebSales.price AS revenue
 FROM BIT_DB.FebSales
 WHERE BIT_DB.FebSales.location = "548 Lincoln St, Seattle, WA 98101"
 GROUP BY BIT_DB.FebSales.Product;
@@ -80,7 +83,9 @@ AND BIT_DB.customers.acctnum <>'';
 
 --8. List all the products sold in Los Angeles in February, and include how many of each were sold.
 
-SELECT BIT_DB.FebSales.product Product_Name, SUM(BIT_DB.FebSales.quantity) How_Many_Sold, BIT_DB.FebSales.location Location
+SELECT BIT_DB.FebSales.product Product_Name,
+SUM(BIT_DB.FebSales.quantity) How_Many_Sold,
+BIT_DB.FebSales.location Location
 FROM BIT_DB.FebSales
 WHERE BIT_DB.FebSales.location LIKE '%Los Angeles%'
 GROUP BY BIT_DB.FebSales.product;
@@ -88,7 +93,8 @@ GROUP BY BIT_DB.FebSales.product;
 
 --9. Which locations in New York received at least 3 orders in January, and how many orders did they each receive?
 
-SELECT DISTINCT BIT_DB.JanSales.location Location, COUNT(BIT_DB.JanSales.orderID) How_Many_Orders
+SELECT DISTINCT BIT_DB.JanSales.location Location,
+COUNT(BIT_DB.JanSales.orderID) How_Many_Orders
 FROM BIT_DB.JanSales
 WHERE BIT_DB.JanSales.location LIKE '%NY%'
 AND orderID <>''
@@ -101,7 +107,8 @@ HAVING COUNT(BIT_DB.JanSales.orderID) >= 3;
 --10. How many of each type of headphone were sold in February?
 -- Answer: Apple Airpods = 1,013, Bose Soundsport = 844, Wired = 1,282
 
-SELECT BIT_DB.FebSales.product Product_Name, SUM(BIT_DB.FebSales.Quantity) Quantity_Sold
+SELECT BIT_DB.FebSales.product Product_Name,
+SUM(BIT_DB.FebSales.Quantity) Quantity_Sold
 FROM BIT_DB.FebSales
 WHERE BIT_DB.FebSales.product LIKE '%headphone%'
 GROUP BY BIT_DB.FebSales.product;
@@ -135,7 +142,8 @@ AND orderid <> 'Order ID';
 --13. Which product brought in the most revenue in January and how much revenue did it bring in total?
 -- Answer: Macbook Pro Laptop, Total Revenue = 399,500.00
 
-SELECT BIT_DB.JanSales.product AS Product, SUM(BIT_DB.JanSales.price*BIT_DB.JanSales.quantity) AS Total_Revenue
+SELECT BIT_DB.JanSales.product AS Product,
+SUM(BIT_DB.JanSales.price*BIT_DB.JanSales.quantity) AS Total_Revenue
 FROM BIT_DB.JanSales
 WHERE BIT_DB.JanSales.quantity IS NOT NULL
 AND BIT_DB.JanSales.quantity <> ''
