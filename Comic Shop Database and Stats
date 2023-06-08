@@ -1,4 +1,4 @@
---create a database of graphic novels.
+--Create a database of graphic novels.
 
 CREATE TABLE comic_shop (id INTEGER PRIMARY KEY, item_name TEXT, price INTEGER, quantity INTEGER, prod_category TEXT, pub_company TEXT);
 INSERT INTO comic_shop VALUES (1, "All Star Superman", 19.99, 1, "Graphic Novel", "DC Comics");
@@ -22,17 +22,28 @@ INSERT INTO comic_shop VALUES (18, "Batman by Grant Morrison OMNIBUS Vol 1", 180
 INSERT INTO comic_shop VALUES (19, "Catwoman Vol 1", 22.00, 9, "Graphic Novel", "DC Comics");
 INSERT INTO comic_shop VALUES (20, "Wonder Woman Goes to Space", 23.99, 3, "Graphic Novel", "DC Comics");
 
---display the entire database, ordered by price.
-SELECT * FROM comic_shop ORDER BY price;
+--Display the entire database, ordered by price.
+SELECT *
+FROM comic_shop
+ORDER BY price;
 
---which publishing company has the most items in the database?
-SELECT MAX(pub_company) "The Publisher with the Most Items in the Database:" FROM comic_shop;
+--Which publishing company has the most items in the database?
+SELECT MAX(pub_company) "The Publisher with the Most Items in the Database:"
+FROM comic_shop;
 
---what is the average cost of a Marvel Comics item?
-SELECT AVG(price) "Average Marvel Comics Item Cost:" FROM comic_shop WHERE pub_company="Marvel Comics";
+--What is the average cost of a Marvel Comics item?
+SELECT AVG(price) "Average Marvel Comics Item Cost:"
+FROM comic_shop
+WHERE pub_company="Marvel Comics";
 
---what is the cheapest item in the store?
-SELECT item_name "Cheapest Item in the Database:", MIN(price) "Price" FROM comic_shop;
+--What is the cheapest item in the store?
+SELECT item_name "Cheapest Item in the Database:",
+MIN(price) "Price"
+FROM comic_shop;
 
---what are the top 5 most expensive DC Comics items (from most expensive, to least)?
-SELECT price "Price", item_name "Item" FROM comic_shop WHERE pub_company="DC Comics" ORDER by price desc LIMIT 5 
+--What are the top 5 most expensive DC Comics items (from most expensive, to least)?
+SELECT price "Price",
+item_name "Item"
+FROM comic_shop
+WHERE pub_company="DC Comics"
+ORDER by price desc LIMIT 5 
